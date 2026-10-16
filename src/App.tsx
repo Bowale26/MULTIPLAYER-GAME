@@ -14,6 +14,7 @@ import { AuthModal } from './components/AuthModal';
 import { LobbiesModal } from './components/LobbiesModal';
 import { LobbyChatDrawer } from './components/LobbyChatDrawer';
 import { GlobalLeaderboard } from './components/GlobalLeaderboard';
+import { HelpModal } from './components/HelpModal';
 import { RoomData, ColorChoice, UserProfile } from './types/game';
 import { soundManager } from './utils/sound';
 import { verifyFirestoreConnection } from './lib/firebase';
@@ -39,6 +40,15 @@ export default function App() {
   const [isJudgeOpen, setIsJudgeOpen] = useState(false);
   const [isMaintenanceOpen, setIsMaintenanceOpen] = useState(false);
   const [isMobileGuideOpen, setIsMobileGuideOpen] = useState(false);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
+  const [toast, setToast] = useState<{ message: string; type: 'error' | 'success' | 'info' } | null>(null);
+
+  const showToast = useCallback((message: string, type: 'error' | 'success' | 'info' = 'info') => {
+    setToast({ message, type });
+    setTimeout(() => {
+      setToast((prev) => (prev?.message === message ? null : prev));
+    }, 3500);
+  }, []);
 
   // SSE event source ref
   const eventSourceRef = useRef<EventSource | null>(null);
@@ -152,6 +162,7 @@ export default function App() {
     else if (tab === 'judge') setIsJudgeOpen(true);
     else if (tab === 'maintenance' || tab === 'rules') setIsMaintenanceOpen(true);
     else if (tab === 'mobile') setIsMobileGuideOpen(true);
+    else if (tab === 'help') setIsHelpOpen(true);
   };
 
   // Color Selection / Answer Submission
@@ -295,12 +306,12 @@ export default function App() {
         connectSSE(data.roomCode);
         soundManager.playSuccess();
       } else {
-        alert(data.message || 'Unable to join room.');
+        showToast(data.message || 'Unable to join room.', 'error');
         soundManager.playError();
       }
     } catch (err) {
       console.error('Failed to join room:', err);
-      alert('Network error while joining room.');
+      showToast('Network error while joining room.', 'error');
     }
   };
 
@@ -322,6 +333,7 @@ export default function App() {
     setCurrentUser(user);
     setCurrentUserId(user.id);
     setPlayerNickname(user.username);
+    showToast(`Welcome back, ${user.username}!`, 'success');
     if (room) {
       const me = room.players.find((p) => p.isHost);
       if (me) me.nickname = `${user.username} (You)`;
@@ -338,6 +350,7 @@ export default function App() {
     setCurrentUserId(guestId);
     setPlayerNickname('Guest Player');
     soundManager.playClick();
+    showToast('Logged out of player account', 'info');
   };
 
   // Add Member to Room (Human or AI Challenger)
@@ -354,12 +367,14 @@ export default function App() {
       if (data.success && data.room) {
         setRoom(data.room);
         soundManager.playSuccess();
+        showToast(`Added ${member.nickname} to match roster!`, 'success');
       } else {
-        alert(data.message || 'Unable to add member to room.');
+        showToast(data.message || 'Unable to add member to room.', 'error');
         soundManager.playError();
       }
     } catch (err) {
       console.error('Failed to add member:', err);
+      showToast('Network error adding member', 'error');
     }
   };
 
@@ -375,12 +390,14 @@ export default function App() {
       if (data.success && data.room) {
         setRoom(data.room);
         soundManager.playClick();
+        showToast('Member removed from match', 'info');
       } else {
-        alert(data.message || 'Unable to remove member.');
+        showToast(data.message || 'Unable to remove member.', 'error');
         soundManager.playError();
       }
     } catch (err) {
       console.error('Failed to delete member:', err);
+      showToast('Network error removing member', 'error');
     }
   };
 
@@ -395,6 +412,7 @@ export default function App() {
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenLobbies={() => setIsLobbiesOpen(true)}
         onOpenLeaderboard={() => setIsLeaderboardOpen(true)}
+        onOpenHelp={() => setIsHelpOpen(true)}
         onUpdateNickname={handleUpdateNickname}
         viewMode={viewMode}
         onToggleViewMode={setViewMode}
@@ -424,6 +442,8 @@ export default function App() {
               onOpenLobbies={() => setIsLobbiesOpen(true)}
               onOpenChat={() => setIsChatOpen(!isChatOpen)}
               onOpenAuth={() => setIsAuthOpen(true)}
+              onOpenVision={() => setIsVisionOpen(true)}
+              onOpenHelp={() => setIsHelpOpen(true)}
             />
 
             {/* Right Sidebar: Players & Member Management & Leaderboard */}
@@ -518,6 +538,10 @@ export default function App() {
           setIsVisionOpen(false);
           setActiveTab('game');
         }}
+        onApplyDetectedColor={(color) => {
+          handleColorSelect(color, 1200);
+          showToast(`🎯 Applied ${color} from Vision Agent directly into round!`, 'success');
+        }}
       />
 
       <JudgeAgentModal
@@ -544,6 +568,53 @@ export default function App() {
           setActiveTab('game');
         }}
       />
+
+      {/* Interactive Player Center & Game Help Modal */}
+      <HelpModal
+        isOpen={isHelpOpen}
+        onClose={() => {
+          setIsHelpOpen(false);
+          setActiveTab('game');
+        }}
+        onOpenVision={() => {
+          setIsVisionOpen(true);
+          setActiveTab('vision');
+        }}
+        onOpenLobbies={() => {
+          setIsLobbiesOpen(true);
+          setActiveTab('lobbies');
+        }}
+        onOpenLeaderboard={() => {
+          setIsLeaderboardOpen(true);
+          setActiveTab('leaderboard');
+        }}
+        onOpenAuth={() => {
+          setIsAuthOpen(true);
+        }}
+      />
+
+      {/* Non-blocking Floating Notification Toast */}
+      {toast && (
+        <div className="fixed top-16 right-4 z-50 animate-in fade-in slide-in-from-top-3 duration-200">
+          <div
+            className={`px-4 py-2.5 rounded-xl shadow-xl border flex items-center gap-2 text-xs font-bold backdrop-blur-md ${
+              toast.type === 'error'
+                ? 'bg-rose-950/90 border-rose-500/50 text-rose-200'
+                : toast.type === 'success'
+                ? 'bg-emerald-950/90 border-emerald-500/50 text-emerald-200'
+                : 'bg-[#0f1738]/95 border-blue-500/40 text-blue-200'
+            }`}
+          >
+            <span>{toast.message}</span>
+            <button
+              onClick={() => setToast(null)}
+              className="ml-2 text-slate-400 hover:text-white"
+            >
+              ✕
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -71,20 +71,61 @@ export const VisionAgentModal: React.FC<VisionAgentModalProps> = ({
     reader.readAsDataURL(file);
   };
 
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
   const startCamera = async () => {
+    setCameraError(null);
     try {
       soundManager.playClick();
+      if (!navigator?.mediaDevices?.getUserMedia) {
+        setCameraError('Camera API is not supported in this environment. You can upload an image or select a sample scene below.');
+        setIsCameraActive(false);
+        return;
+      }
       setIsCameraActive(true);
       const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' } });
       if (videoRef.current) {
         videoRef.current.srcObject = stream;
-        videoRef.current.play();
+        videoRef.current.play().catch(() => {});
       }
-    } catch (err) {
-      console.error('Camera access denied:', err);
+    } catch (err: unknown) {
+      console.warn('Camera access was dismissed or unavailable:', err);
       setIsCameraActive(false);
-      alert('Camera access could not be initialized. Please upload an image instead.');
+      setCameraError('Camera access was dismissed or unavailable in this window. You can upload an image or load a sample scene below.');
     }
+  };
+
+  const handleLoadSampleScene = (color: 'RED' | 'BLUE' | 'GREEN' | 'YELLOW') => {
+    soundManager.playClick();
+    setCameraError(null);
+    setIsCameraActive(false);
+
+    // High fidelity SVG based gaming scene base64 preview
+    const sampleHexes = {
+      RED: '#ef4444',
+      BLUE: '#3b82f6',
+      GREEN: '#10b981',
+      YELLOW: '#eab308'
+    };
+    const chosenColor = color;
+    const chosenHex = sampleHexes[chosenColor];
+
+    const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="480" viewBox="0 0 640 480">
+      <defs>
+        <radialGradient id="glow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="${chosenHex}" stop-opacity="0.8"/>
+          <stop offset="100%" stop-color="#050814" stop-opacity="1"/>
+        </radialGradient>
+      </defs>
+      <rect width="640" height="480" fill="#050814"/>
+      <circle cx="320" cy="240" r="180" fill="url(#glow)"/>
+      <rect x="180" y="160" width="280" height="160" rx="20" fill="#0d1533" stroke="${chosenHex}" stroke-width="4"/>
+      <text x="320" y="230" fill="#ffffff" font-family="sans-serif" font-size="22" font-weight="bold" text-anchor="middle">DOMINANT ${chosenColor} ARENA</text>
+      <text x="320" y="265" fill="${chosenHex}" font-family="monospace" font-size="14" text-anchor="middle">RGB GAMING LIGHTING</text>
+    </svg>`;
+    const dataUrl = `data:image/svg+xml;base64,${btoa(svg)}`;
+    setImagePreview(dataUrl);
+    runVisionAnalysis(dataUrl);
   };
 
   const captureCamera = () => {
@@ -274,6 +315,24 @@ export const VisionAgentModal: React.FC<VisionAgentModalProps> = ({
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 {/* Upload / Camera Card */}
                 <div className="bg-[#0e1633] border border-[#1f2e59] rounded-2xl p-4 flex flex-col items-center justify-center text-center">
+                  {cameraError && (
+                    <div className="w-full mb-3 p-2.5 rounded-xl bg-amber-500/10 border border-amber-500/30 text-amber-300 text-[11px] flex items-start justify-between gap-2">
+                      <div className="flex items-start gap-1.5">
+                        <AlertTriangle className="w-4 h-4 shrink-0 text-amber-400 mt-0.5" />
+                        <div>
+                          <p className="font-semibold text-slate-200">Camera Notice</p>
+                          <p className="text-slate-300">{cameraError}</p>
+                        </div>
+                      </div>
+                      <button
+                        onClick={() => setCameraError(null)}
+                        className="text-slate-400 hover:text-white text-xs px-1"
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+
                   {isCameraActive ? (
                     <div className="w-full space-y-3">
                       <video
@@ -282,12 +341,24 @@ export const VisionAgentModal: React.FC<VisionAgentModalProps> = ({
                         autoPlay
                         playsInline
                       />
-                      <button
-                        onClick={captureCamera}
-                        className="w-full py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2"
-                      >
-                        <Camera className="w-4 h-4" /> Capture Frame
-                      </button>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={captureCamera}
+                          className="flex-1 py-2 bg-emerald-600 hover:bg-emerald-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-2"
+                        >
+                          <Camera className="w-4 h-4" /> Capture Frame
+                        </button>
+                        <button
+                          onClick={() => {
+                            const stream = videoRef.current?.srcObject as MediaStream;
+                            stream?.getTracks().forEach((track) => track.stop());
+                            setIsCameraActive(false);
+                          }}
+                          className="px-3 py-2 bg-[#172247] hover:bg-[#1f2e5e] text-slate-300 rounded-xl text-xs font-semibold"
+                        >
+                          Cancel
+                        </button>
+                      </div>
                     </div>
                   ) : imagePreview ? (
                     <div className="w-full space-y-3">
@@ -312,20 +383,20 @@ export const VisionAgentModal: React.FC<VisionAgentModalProps> = ({
                       </div>
                     </div>
                   ) : (
-                    <div className="py-6 flex flex-col items-center">
+                    <div className="py-5 flex flex-col items-center w-full">
                       <div className="w-12 h-12 rounded-2xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400 mb-3">
                         <Upload className="w-6 h-6" />
                       </div>
                       <p className="text-xs font-bold text-slate-200 mb-1">
                         Upload or Capture Gaming Environment
                       </p>
-                      <p className="text-[11px] text-slate-400 mb-4 max-w-xs">
+                      <p className="text-[11px] text-slate-400 mb-3 max-w-xs text-center">
                         Computer vision detects dominant target color, evaluates RGB lighting contrast, and checks for screen glare.
                       </p>
-                      <div className="flex gap-2">
+                      <div className="flex gap-2 mb-3">
                         <button
                           onClick={() => fileInputRef.current?.click()}
-                          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold flex items-center gap-2"
+                          className="px-4 py-2 bg-rose-600 hover:bg-rose-500 text-white rounded-xl text-xs font-bold flex items-center gap-2 shadow-md shadow-rose-600/30"
                         >
                           <Upload className="w-4 h-4" /> Upload Image
                         </button>
@@ -333,8 +404,41 @@ export const VisionAgentModal: React.FC<VisionAgentModalProps> = ({
                           onClick={startCamera}
                           className="px-4 py-2 bg-[#172247] hover:bg-[#1e2d5c] text-slate-200 rounded-xl text-xs font-bold flex items-center gap-2"
                         >
-                          <Camera className="w-4 h-4" /> Camera
+                          <Camera className="w-4 h-4" /> Webcam
                         </button>
+                      </div>
+
+                      {/* Instant Testing Presets (No camera required) */}
+                      <div className="w-full pt-2.5 border-t border-[#1a2546] text-center">
+                        <span className="text-[10px] text-slate-400 block mb-1.5 font-semibold">
+                          Or test with sample battle station:
+                        </span>
+                        <div className="grid grid-cols-4 gap-1.5">
+                          <button
+                            onClick={() => handleLoadSampleScene('RED')}
+                            className="py-1 px-1.5 bg-red-950/60 hover:bg-red-900/60 border border-red-500/30 text-red-300 rounded-lg text-[10px] font-bold"
+                          >
+                            Red Station
+                          </button>
+                          <button
+                            onClick={() => handleLoadSampleScene('BLUE')}
+                            className="py-1 px-1.5 bg-blue-950/60 hover:bg-blue-900/60 border border-blue-500/30 text-blue-300 rounded-lg text-[10px] font-bold"
+                          >
+                            Blue Station
+                          </button>
+                          <button
+                            onClick={() => handleLoadSampleScene('YELLOW')}
+                            className="py-1 px-1.5 bg-amber-950/60 hover:bg-amber-900/60 border border-amber-500/30 text-amber-300 rounded-lg text-[10px] font-bold"
+                          >
+                            Yellow Station
+                          </button>
+                          <button
+                            onClick={() => handleLoadSampleScene('GREEN')}
+                            className="py-1 px-1.5 bg-emerald-950/60 hover:bg-emerald-900/60 border border-emerald-500/30 text-emerald-300 rounded-lg text-[10px] font-bold"
+                          >
+                            Green Station
+                          </button>
+                        </div>
                       </div>
                     </div>
                   )}

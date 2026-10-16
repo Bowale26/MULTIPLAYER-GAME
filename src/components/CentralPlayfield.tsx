@@ -9,7 +9,9 @@ import {
   Clock, 
   Trophy, 
   Sparkles,
-  Bot
+  Bot,
+  Eye,
+  HelpCircle
 } from 'lucide-react';
 import { RoomData, ColorChoice } from '../types/game';
 import { soundManager } from '../utils/sound';
@@ -26,6 +28,8 @@ interface CentralPlayfieldProps {
   onOpenLobbies?: () => void;
   onOpenChat?: () => void;
   onOpenAuth?: () => void;
+  onOpenVision?: () => void;
+  onOpenHelp?: () => void;
 }
 
 export const CentralPlayfield: React.FC<CentralPlayfieldProps> = ({
@@ -40,6 +44,8 @@ export const CentralPlayfield: React.FC<CentralPlayfieldProps> = ({
   onOpenLobbies,
   onOpenChat,
   onOpenAuth,
+  onOpenVision,
+  onOpenHelp,
 }) => {
   const [timeLeft, setTimeLeft] = useState<number>(12);
   const [copiedCode, setCopiedCode] = useState(false);
@@ -544,6 +550,34 @@ export const CentralPlayfield: React.FC<CentralPlayfieldProps> = ({
               >
                 <Bot className="w-3 h-3" /> +Bots
               </button>
+            </div>
+
+            {/* Quick Vision Agent & Help triggers */}
+            <div className="flex items-center gap-1.5 mt-2 pt-1.5 border-t border-[#19264a]">
+              {onOpenVision && (
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    onOpenVision();
+                  }}
+                  className="flex-1 py-1 px-1.5 bg-[#121c3b] hover:bg-[#19264e] text-rose-300 border border-rose-500/30 rounded-md text-[10px] font-bold flex items-center justify-center gap-1 transition-all"
+                  title="Launch Computer Vision & Target Recognition Studio"
+                >
+                  <Eye className="w-3 h-3 text-rose-400" /> Vision Agent
+                </button>
+              )}
+              {onOpenHelp && (
+                <button
+                  onClick={() => {
+                    soundManager.playClick();
+                    onOpenHelp();
+                  }}
+                  className="flex-1 py-1 px-1.5 bg-[#121c3b] hover:bg-[#19264e] text-cyan-300 border border-cyan-500/30 rounded-md text-[10px] font-bold flex items-center justify-center gap-1 transition-all"
+                  title="Open Game Rules, Shortcuts & FAQ Guide"
+                >
+                  <HelpCircle className="w-3 h-3 text-cyan-400" /> Help & Rules
+                </button>
+              )}
             </div>
           </div>
         </div>

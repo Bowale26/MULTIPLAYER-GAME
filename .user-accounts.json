@@ -30,5 +30,195 @@
       "highScore": 0,
       "totalPoints": 0
     }
+  },
+  {
+    "id": "PID-VIPER1",
+    "email": "viper@clash.io",
+    "username": "CyberViper",
+    "passwordHash": "542871bd21e8d63c9be6b60b5787044c8d144d7e0adb189a75cf744ce3b3716f28d2917c6a43a77180f3c2744d9f84a0ae017dd46175828c69985a0954533587",
+    "salt": "salt-PID-VIPER1",
+    "avatarIndex": 2,
+    "token": "token-pid-viper1",
+    "createdAt": 1791736025456,
+    "stats": {
+      "gamesPlayed": 28,
+      "gamesWon": 22,
+      "highScore": 195,
+      "totalPoints": 2840,
+      "roundsPlayed": 154,
+      "bestStreak": 9,
+      "fastestResponseMs": 740
+    }
+  },
+  {
+    "id": "PID-QUEEN2",
+    "email": "queen@clash.io",
+    "username": "PixelQueen",
+    "passwordHash": "db0029b1f5190be3faf2256048f67e6ef48b25865f9b6d4963ebae32f618266d8a50058abc70ec8e08db8fdb79e34f793c5c5eb89cf60ef9ccb42c29e7f3851b",
+    "salt": "salt-PID-QUEEN2",
+    "avatarIndex": 3,
+    "token": "token-pid-queen2",
+    "createdAt": 1791736025457,
+    "stats": {
+      "gamesPlayed": 24,
+      "gamesWon": 18,
+      "highScore": 180,
+      "totalPoints": 2420,
+      "roundsPlayed": 132,
+      "bestStreak": 8,
+      "fastestResponseMs": 880
+    }
+  },
+  {
+    "id": "PID-SARAH4",
+    "email": "sarah@game.io",
+    "username": "Sarah",
+    "passwordHash": "1743d23200a546d0736b11c594127ccb9f56c765c93db990f4798724a9465bf715fefcfdd1bff11ea5dba6512a5fb59f24a5c958883d1d0d18cc39d376b421de",
+    "salt": "salt-PID-SARAH4",
+    "avatarIndex": 2,
+    "token": "token-pid-sarah4",
+    "createdAt": 1791736025458,
+    "stats": {
+      "gamesPlayed": 15,
+      "gamesWon": 8,
+      "highScore": 150,
+      "totalPoints": 1120,
+      "roundsPlayed": 75,
+      "bestStreak": 5,
+      "fastestResponseMs": 1250
+    }
+  },
+  {
+    "id": "PID-SONIC5",
+    "email": "sonic@clash.io",
+    "username": "SonicWave",
+    "passwordHash": "169a7d2e76115eea521c4833d3ab9696be66e685dc136d97a54d460e0cf6a121241a93355dc7420ff7ac146ec207904cc9221eaf120b31590d32742fcde3277e",
+    "salt": "salt-PID-SONIC5",
+    "avatarIndex": 4,
+    "token": "token-pid-sonic5",
+    "createdAt": 1791736025458,
+    "stats": {
+      "gamesPlayed": 12,
+      "gamesWon": 7,
+      "highScore": 140,
+      "totalPoints": 980,
+      "roundsPlayed": 58,
+      "bestStreak": 6,
+      "fastestResponseMs": 1020
+    }
+  },
+  {
+    "id": "PID-MIKE06",
+    "email": "mike@game.io",
+    "username": "Mike",
+    "passwordHash": "071c6a4ab618ca195002a93121de89347a422afc132efd5444a6a558b4803ba79cb383ce86e2c401ad34d19357052740eb0c04eecc78744fd5cac17c8a57a887",
+    "salt": "salt-PID-MIKE06",
+    "avatarIndex": 3,
+    "token": "token-pid-mike06",
+    "createdAt": 1791736025459,
+    "stats": {
+      "gamesPlayed": 11,
+      "gamesWon": 5,
+      "highScore": 135,
+      "totalPoints": 850,
+      "roundsPlayed": 48,
+      "bestStreak": 4,
+      "fastestResponseMs": 1350
+    }
+  },
+  {
+    "id": "PID-EMMA07",
+    "email": "emma@game.io",
+    "username": "Emma",
+    "passwordHash": "a5adea996343ac955816c33a5342342a0286494ef7036c6bb76ec609e396cf84d04f7434fc9d27549ffa5901492a0bf6f74bc09c4b18c2840f75a0ff5ae87c9d",
+    "salt": "salt-PID-EMMA07",
+    "avatarIndex": 4,
+    "token": "token-pid-emma07",
+    "createdAt": 1791736025460,
+    "stats": {
+      "gamesPlayed": 10,
+      "gamesWon": 5,
+      "highScore": 130,
+      "totalPoints": 790,
+      "roundsPlayed": 44,
+      "bestStreak": 4,
+      "fastestResponseMs": 1420
+    }
+  },
+  {
+    "id": "PID-GHOST8",
+    "email": "ghost@clash.io",
+    "username": "NeonGhost",
+    "passwordHash": "7f082ce170cc847d9e20b5a1502a4b6b95cd1b650d4e3966049413e9e12cd00a0cf89af7b3ac2b2eab809e10e50ba8219533c148c1ba6bfe005fd76531189709",
+    "salt": "salt-PID-GHOST8",
+    "avatarIndex": 5,
+    "token": "token-pid-ghost8",
+    "createdAt": 1791736025461,
+    "stats": {
+      "gamesPlayed": 9,
+      "gamesWon": 4,
+      "highScore": 125,
+      "totalPoints": 710,
+      "roundsPlayed": 38,
+      "bestStreak": 3,
+      "fastestResponseMs": 1580
+    }
+  },
+  {
+    "id": "PID-DAVID9",
+    "email": "david@game.io",
+    "username": "David",
+    "passwordHash": "39a85ffe9c307e972b386d9ea53d189fd31908545f1d82a5f0ab5839a32751cbad248aa89fc941cbc8fc8ec1686295e652518b3b651d5e7819bc9ee462f1f75a",
+    "salt": "salt-PID-DAVID9",
+    "avatarIndex": 5,
+    "token": "token-pid-david9",
+    "createdAt": 1791736025462,
+    "stats": {
+      "gamesPlayed": 8,
+      "gamesWon": 3,
+      "highScore": 115,
+      "totalPoints": 650,
+      "roundsPlayed": 35,
+      "bestStreak": 3,
+      "fastestResponseMs": 1700
+    }
+  },
+  {
+    "id": "PID-LISA10",
+    "email": "lisa@game.io",
+    "username": "Lisa",
+    "passwordHash": "9e0a170b47a95cb702e1da9f9399056a4bff6be77cb5b99f19b282fe5f2b588dcde80ba101127ee587f74071194b4cc41d065752a9c49631c4c54491c4423052",
+    "salt": "salt-PID-LISA10",
+    "avatarIndex": 6,
+    "token": "token-pid-lisa10",
+    "createdAt": 1791736025463,
+    "stats": {
+      "gamesPlayed": 7,
+      "gamesWon": 2,
+      "highScore": 110,
+      "totalPoints": 580,
+      "roundsPlayed": 30,
+      "bestStreak": 2,
+      "fastestResponseMs": 1850
+    }
+  },
+  {
+    "id": "PID-CD0B2D",
+    "email": "elena@game.io",
+    "username": "ElenaRook",
+    "passwordHash": "54dc8d0a8836e56b833487670c4a3aa805a0d6207620b7843d2cab44d59deac2e9fa217eb6405204b7478aa6d938164132627ed35e1a6e542eca5cf13fc38277",
+    "salt": "a771f707e310d9a063e56efcb475a4a1",
+    "avatarIndex": 2,
+    "token": "token-881ab0ecfd6b02138a99b3ea0af7391938b767be0bcdc53b",
+    "createdAt": 1792172470127,
+    "stats": {
+      "gamesPlayed": 0,
+      "gamesWon": 0,
+      "highScore": 0,
+      "totalPoints": 0,
+      "roundsPlayed": 0,
+      "bestStreak": 0,
+      "fastestResponseMs": 0
+    }
   }
 ]

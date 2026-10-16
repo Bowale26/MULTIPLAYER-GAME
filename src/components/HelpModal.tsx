@@ -1,0 +1,452 @@
+import React, { useState } from 'react';
+import { 
+  HelpCircle, 
+  X, 
+  Gamepad2, 
+  Users, 
+  Eye, 
+  Trophy, 
+  Sparkles, 
+  ShieldCheck, 
+  Keyboard, 
+  Zap, 
+  Flame, 
+  Bot, 
+  UserPlus, 
+  Trash2, 
+  AlertTriangle, 
+  Camera, 
+  CheckCircle2, 
+  ChevronRight
+} from 'lucide-react';
+import { soundManager } from '../utils/sound';
+
+interface HelpModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onOpenVision?: () => void;
+  onOpenLobbies?: () => void;
+  onOpenLeaderboard?: () => void;
+  onOpenAuth?: () => void;
+}
+
+export const HelpModal: React.FC<HelpModalProps> = ({
+  isOpen,
+  onClose,
+  onOpenVision,
+  onOpenLobbies,
+  onOpenLeaderboard,
+  onOpenAuth,
+}) => {
+  const [activeCategory, setActiveCategory] = useState<'gameplay' | 'multiplayer' | 'vision' | 'competitive' | 'faq'>('gameplay');
+
+  if (!isOpen) return null;
+
+  const categories = [
+    { id: 'gameplay' as const, label: 'Game Rules & Controls', icon: Gamepad2 },
+    { id: 'multiplayer' as const, label: 'Multiplayer & Members', icon: Users },
+    { id: 'vision' as const, label: 'Vision Agent Guide', icon: Eye },
+    { id: 'competitive' as const, label: 'Ranking & Security', icon: Trophy },
+    { id: 'faq' as const, label: 'Troubleshooting & FAQ', icon: AlertTriangle },
+  ];
+
+  return (
+    <div className="fixed inset-0 z-50 bg-black/80 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 select-none">
+      <div className="w-full max-w-4xl bg-[#090e24] border border-[#23335f] rounded-2xl shadow-2xl flex flex-col max-h-[90vh] overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        {/* Header */}
+        <div className="px-5 py-3.5 bg-[#0d1533] border-b border-[#1f2d57] flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-cyan-500 via-blue-600 to-indigo-600 p-0.5 shadow-md">
+              <div className="w-full h-full bg-[#080d22] rounded-[10px] flex items-center justify-center">
+                <HelpCircle className="w-5 h-5 text-cyan-400" />
+              </div>
+            </div>
+            <div>
+              <h2 className="text-sm font-black text-white flex items-center gap-2">
+                Game Center & Player Help
+                <span className="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/20 text-cyan-300 font-bold border border-blue-500/30">
+                  Documentation
+                </span>
+              </h2>
+              <p className="text-[11px] text-slate-400">
+                Official guide for Color Clash, Vision Agent integration, multiplayer management & competitive ranking
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              onClose();
+            }}
+            className="p-1.5 text-slate-400 hover:text-white rounded-lg hover:bg-[#1a2548] transition-colors"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Category Navigation Bar */}
+        <div className="px-4 py-2 bg-[#0b1129] border-b border-[#1b274c] flex gap-2 overflow-x-auto scrollbar-none">
+          {categories.map((cat) => {
+            const Icon = cat.icon;
+            const isActive = activeCategory === cat.id;
+            return (
+              <button
+                key={cat.id}
+                onClick={() => {
+                  soundManager.playClick();
+                  setActiveCategory(cat.id);
+                }}
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1.5 shrink-0 ${
+                  isActive
+                    ? 'bg-blue-600 text-white shadow-md shadow-blue-600/30'
+                    : 'text-slate-400 hover:text-white hover:bg-[#141e3d]'
+                }`}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                <span>{cat.label}</span>
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Content Body */}
+        <div className="flex-1 overflow-y-auto p-4 sm:p-6 space-y-4 text-slate-200">
+          {/* 1. GAMEPLAY & CONTROLS */}
+          {activeCategory === 'gameplay' && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="p-4 rounded-xl bg-[#0e1633] border border-[#1f2e59] flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-blue-500/10 text-cyan-400 shrink-0 mt-0.5">
+                  <Gamepad2 className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white mb-1">How Color Clash Works</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Color Clash is a fast-paced multiplayer reflex game. In every round, a target color is generated by the server. Your objective is to identify and tap the matching color tile before the round timer expires. All players compete simultaneously in the same room.
+                  </p>
+                </div>
+              </div>
+
+              {/* Scoring System */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e]">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-amber-400 mb-1">
+                    <Zap className="w-4 h-4" /> ⚡ Lightning Speed
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    Respond in <strong>&lt; 2.0 seconds</strong> for maximum speed bonus (+20 points).
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e]">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400 mb-1">
+                    <Zap className="w-4 h-4" /> ⚡ Fast Reflex
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    Respond in <strong>&lt; 4.0 seconds</strong> for bonus (+16 points). Standard correct: +10 pts.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e]">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-rose-400 mb-1">
+                    <Flame className="w-4 h-4" /> Streak Multiplier
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    Consecutive correct answers trigger active win streaks displayed with fire icons on the roster.
+                  </p>
+                </div>
+              </div>
+
+              {/* Keyboard Shortcuts */}
+              <div className="p-4 rounded-xl bg-[#0e1633] border border-[#1f2e59]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2.5 flex items-center gap-2">
+                  <Keyboard className="w-4 h-4 text-cyan-400" /> Keyboard Hotkeys
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 text-xs">
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                    <span className="text-slate-400">RED Tile</span>
+                    <kbd className="px-2 py-0.5 rounded bg-red-500/20 border border-red-500/40 text-red-300 font-mono font-bold">
+                      1 / R
+                    </kbd>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                    <span className="text-slate-400">BLUE Tile</span>
+                    <kbd className="px-2 py-0.5 rounded bg-blue-500/20 border border-blue-500/40 text-blue-300 font-mono font-bold">
+                      2 / B
+                    </kbd>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                    <span className="text-slate-400">YELLOW Tile</span>
+                    <kbd className="px-2 py-0.5 rounded bg-amber-500/20 border border-amber-500/40 text-amber-300 font-mono font-bold">
+                      3 / Y
+                    </kbd>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                    <span className="text-slate-400">GREEN Tile</span>
+                    <kbd className="px-2 py-0.5 rounded bg-emerald-500/20 border border-emerald-500/40 text-emerald-300 font-mono font-bold">
+                      4 / G
+                    </kbd>
+                  </div>
+                </div>
+                <p className="text-[10px] text-slate-400 mt-2">
+                  Tip: Room Hosts can press <kbd className="px-1.5 py-0.2 rounded bg-slate-700 text-slate-200 font-mono">Spacebar</kbd> to start rounds instantly.
+                </p>
+              </div>
+            </div>
+          )}
+
+          {/* 2. MULTIPLAYER & MEMBERS */}
+          {activeCategory === 'multiplayer' && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="p-4 rounded-xl bg-[#0e1633] border border-[#1f2e59] flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-cyan-500/10 text-cyan-400 shrink-0 mt-0.5">
+                  <Users className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white mb-1">Multiplayer Room Management</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Create a room or join one using a unique 6-character Match Code (e.g., <code className="text-cyan-300 font-mono">7F3K9Q</code>). All match states, scores, and chat messages sync instantly with low latency across all connected browsers using Server-Sent Events (SSE).
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400">
+                    <UserPlus className="w-4 h-4" /> Adding Members
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    Open the right-hand <strong>Members</strong> tab and click <strong>Add Member</strong>. You can instantly select preset competitive AI bots (Cipher, Valkyrie, Nova, Rook, Apex) or type custom usernames.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-2">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-rose-400">
+                    <Trash2 className="w-4 h-4" /> Removing & Kicking Members
+                  </div>
+                  <p className="text-[11px] text-slate-300 leading-relaxed">
+                    Room hosts or players can click the trash icon next to any member. An in-app safe confirmation badge (<span className="text-rose-300 font-bold">Remove?</span>) appears to prevent accidental deletions.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-white block">Explore Open Lobbies</span>
+                  <span className="text-[11px] text-slate-400">Find or create custom private/public multiplayer lobbies</span>
+                </div>
+                {onOpenLobbies && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenLobbies();
+                    }}
+                    className="px-3 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg text-xs font-bold flex items-center gap-1 transition-colors"
+                  >
+                    <span>Browse Lobbies</span>
+                    <ChevronRight className="w-3.5 h-3.5" />
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 3. VISION AGENT */}
+          {activeCategory === 'vision' && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="p-4 rounded-xl bg-[#0e1633] border border-[#1f2e59] flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-pink-500/10 text-pink-400 shrink-0 mt-0.5">
+                  <Eye className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white mb-1">Vision Agent & Computer Vision Studio</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    The Vision Agent uses Gemini multimodal vision models to inspect your gaming station, evaluate ambient RGB lighting contrast, check for screen glare hazards, and identify physical color targets.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-pink-400">
+                    <Camera className="w-4 h-4" /> 1. Webcam / Upload
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    Capture your desk with your webcam or upload a battle station photo for computer vision analysis.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-cyan-400">
+                    <Sparkles className="w-4 h-4" /> 2. One-Click Sample Presets
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    If your webcam is unavailable, click any of the 4 sample battle station buttons (Red, Blue, Yellow, Green) for immediate testing.
+                  </p>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1.5">
+                  <div className="flex items-center gap-1.5 text-xs font-bold text-emerald-400">
+                    <CheckCircle2 className="w-4 h-4" /> 3. Play Detected Color
+                  </div>
+                  <p className="text-[11px] text-slate-300">
+                    Click "Play Detected Color in Match" to submit your detected room color directly into the active game round!
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#080d20] border border-[#1b2748] flex items-center justify-between">
+                <div>
+                  <span className="text-xs font-bold text-white block">Try the Vision Agent Now</span>
+                  <span className="text-[11px] text-slate-400">Inspect room contrast, scan objects, or generate 4K assets</span>
+                </div>
+                {onOpenVision && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenVision();
+                    }}
+                    className="px-3.5 py-1.5 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-xs font-bold flex items-center gap-1.5 shadow-md shadow-rose-600/30 transition-all"
+                  >
+                    <Eye className="w-3.5 h-3.5" />
+                    <span>Launch Vision Agent</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 4. COMPETITIVE RANKING & SECURITY */}
+          {activeCategory === 'competitive' && (
+            <div className="space-y-4 animate-in fade-in duration-150">
+              <div className="p-4 rounded-xl bg-[#0e1633] border border-[#1f2e59] flex items-start gap-3">
+                <div className="p-2 rounded-lg bg-amber-500/10 text-amber-400 shrink-0 mt-0.5">
+                  <ShieldCheck className="w-6 h-6" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-black text-white mb-1">Permanent Event Sourcing & ELO Tiers</h3>
+                  <p className="text-xs text-slate-300 leading-relaxed">
+                    Winning records cannot be fabricated or lost. Every finished match commits an immutable document to Cloud Firestore containing final scoreboards, timestamps, and rating deltas.
+                  </p>
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e]">
+                <h4 className="text-xs font-bold uppercase tracking-wider text-slate-300 mb-2">
+                  Competitive Rating Tier Ladder (ELO MMR)
+                </h4>
+                <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 text-xs text-center">
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-slate-700/50">
+                    <span className="block font-black text-slate-300">BRONZE</span>
+                    <span className="text-[10px] text-slate-400">&lt; 1200 ELO</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-slate-500/50">
+                    <span className="block font-black text-slate-300">SILVER</span>
+                    <span className="text-[10px] text-slate-400">1200 - 1399 ELO</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-amber-500/50">
+                    <span className="block font-black text-amber-400">GOLD</span>
+                    <span className="text-[10px] text-slate-400">1400 - 1599 ELO</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-cyan-500/50">
+                    <span className="block font-black text-cyan-400">PLATINUM</span>
+                    <span className="text-[10px] text-slate-400">1600 - 1799 ELO</span>
+                  </div>
+                  <div className="p-2 rounded-lg bg-[#080d20] border border-rose-500/50 col-span-2 sm:col-span-1">
+                    <span className="block font-black text-rose-400">GRANDMASTER</span>
+                    <span className="text-[10px] text-slate-400">2000+ ELO</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="flex gap-2">
+                {onOpenLeaderboard && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenLeaderboard();
+                    }}
+                    className="flex-1 py-2 bg-[#121c38] hover:bg-[#1a2850] text-amber-300 border border-[#233562] rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 transition-colors"
+                  >
+                    <Trophy className="w-3.5 h-3.5 text-amber-400" />
+                    <span>View Global Leaderboard</span>
+                  </button>
+                )}
+                {onOpenAuth && (
+                  <button
+                    onClick={() => {
+                      onClose();
+                      onOpenAuth();
+                    }}
+                    className="flex-1 py-2 bg-blue-600 hover:bg-blue-500 text-white rounded-xl text-xs font-bold flex items-center justify-center gap-1.5 shadow-md shadow-blue-600/30 transition-colors"
+                  >
+                    <ShieldCheck className="w-3.5 h-3.5" />
+                    <span>My Profile & Stats</span>
+                  </button>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* 5. FAQ & TROUBLESHOOTING */}
+          {activeCategory === 'faq' && (
+            <div className="space-y-3 animate-in fade-in duration-150">
+              <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                  What if camera permission is denied or dismissed?
+                </span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  No camera is strictly required to enjoy the game or test the Vision Agent! You can click any of the 4 sample battle station scene buttons (Red, Blue, Yellow, Green) inside the Vision Agent modal to test room contrast, dominant color detection, and hazard inspection instantly.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                  How do I play with friends across different computers?
+                </span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Click the <strong>Share</strong> button on the right arena sidebar or share your 6-character room code. When friends navigate to the app, they can paste your code into the <strong>Join Room</strong> input and join your match in real-time.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-cyan-400" />
+                  Can I sign in with Google or create an account?
+                </span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  Yes! Click your avatar in the top right header to open the Identity modal. You can sign in via Google or register with your name, email, and password to permanently track your wins, losses, streak records, and achievements.
+                </p>
+              </div>
+
+              <div className="p-3.5 rounded-xl bg-[#0c132c] border border-[#1b294e] space-y-1">
+                <span className="text-xs font-bold text-white flex items-center gap-1.5">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-purple-400" />
+                  Is there sound or can I mute audio?
+                </span>
+                <p className="text-[11px] text-slate-300 leading-relaxed">
+                  The app features a procedural Web Audio synthesizer providing real-time audio cues for round ticks, color taps, streaks, and wins. Click the speaker icon in the top header to mute or unmute anytime.
+                </p>
+              </div>
+            </div>
+          )}
+        </div>
+
+        {/* Footer */}
+        <div className="px-5 py-3 bg-[#0d1533] border-t border-[#1f2d57] flex items-center justify-between text-xs text-slate-400">
+          <span>Need further help? AI Game Master is available in the sidebar navigation.</span>
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              onClose();
+            }}
+            className="px-4 py-1.5 bg-blue-600 hover:bg-blue-500 text-white rounded-lg font-bold transition-colors"
+          >
+            Got it, Let's Play!
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+};

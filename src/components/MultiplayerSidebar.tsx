@@ -122,12 +122,20 @@ export const MultiplayerSidebar: React.FC<MultiplayerSidebarProps> = ({
     }
   };
 
-  const handleDeletePlayer = (playerId: string, nickname: string) => {
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+
+  const handleDeletePlayer = (playerId: string) => {
     soundManager.playClick();
-    if (confirm(`Remove "${nickname}" from the match?`)) {
+    if (confirmDeleteId === playerId) {
       if (onDeleteMember) {
         onDeleteMember(playerId);
       }
+      setConfirmDeleteId(null);
+    } else {
+      setConfirmDeleteId(playerId);
+      setTimeout(() => {
+        setConfirmDeleteId((current) => (current === playerId ? null : current));
+      }, 4000);
     }
   };
 
@@ -375,11 +383,16 @@ export const MultiplayerSidebar: React.FC<MultiplayerSidebarProps> = ({
                     {/* Delete / Kick Member Button (enabled for host or anyone on bots, but not on self) */}
                     {!isMe && (
                       <button
-                        onClick={() => handleDeletePlayer(p.id, p.nickname)}
-                        title={`Delete / Kick ${p.nickname} from match`}
-                        className="opacity-70 group-hover:opacity-100 p-1 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10 rounded-md transition-all"
+                        onClick={() => handleDeletePlayer(p.id)}
+                        title={confirmDeleteId === p.id ? `Click again to confirm removing ${p.nickname}` : `Remove ${p.nickname} from match`}
+                        className={`p-1 rounded-md transition-all flex items-center gap-1 ${
+                          confirmDeleteId === p.id
+                            ? 'bg-rose-600 text-white font-bold text-[9px] px-1.5 py-0.5 shadow-md shadow-rose-600/30'
+                            : 'opacity-70 group-hover:opacity-100 text-slate-400 hover:text-rose-400 hover:bg-rose-500/10'
+                        }`}
                       >
                         <Trash2 className="w-3 h-3" />
+                        {confirmDeleteId === p.id && <span>Remove?</span>}
                       </button>
                     )}
                   </div>

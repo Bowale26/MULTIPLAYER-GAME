@@ -12,7 +12,8 @@ import {
   ShieldCheck,
   User,
   LogIn,
-  Trophy
+  Trophy,
+  HelpCircle
 } from 'lucide-react';
 import { UserProfile } from '../types/game';
 import { soundManager } from '../utils/sound';
@@ -25,6 +26,7 @@ interface HeaderProps {
   onOpenAuth: () => void;
   onOpenLobbies: () => void;
   onOpenLeaderboard?: () => void;
+  onOpenHelp?: () => void;
   onUpdateNickname: (name: string) => void;
   viewMode: 'desktop' | 'mobile-preview';
   onToggleViewMode: (mode: 'desktop' | 'mobile-preview') => void;
@@ -38,6 +40,7 @@ export const Header: React.FC<HeaderProps> = ({
   onOpenAuth,
   onOpenLobbies,
   onOpenLeaderboard,
+  onOpenHelp,
   onUpdateNickname,
   viewMode,
   onToggleViewMode,
@@ -181,6 +184,20 @@ export const Header: React.FC<HeaderProps> = ({
         >
           {isMuted ? <VolumeX className="w-4 h-4 text-rose-400" /> : <Volume2 className="w-4 h-4 text-emerald-400" />}
         </button>
+
+        {/* Help & Documentation Button */}
+        {onOpenHelp && (
+          <button
+            onClick={() => {
+              soundManager.playClick();
+              onOpenHelp();
+            }}
+            className="p-2 rounded-lg bg-[#0e1630] border border-[#1d294d] text-cyan-300 hover:text-white hover:border-cyan-400/50 transition-all"
+            title="Game Help & Vision Agent Guide"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+        )}
 
         {/* User Account / Profile Button */}
         <button
