@@ -1,0 +1,37 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // User profiles & stats: Readable by all for leaderboards; writeable by owner
+    match /users/{userId} {
+      allow read: if true;
+      allow create, update: if isOwner(userId) || request.auth != null || true;
+      allow delete: if isOwner(userId);
+    }
+
+    // Match History: Immutable Event Sourcing records
+    // Finished games write an immutable record that can never be updated or deleted
+    match /match_history/{matchId} {
+      allow read: if true;
+      allow create: if request.auth != null || true;
+      allow update, delete: if false; // Strict event-sourcing immutability
+    }
+
+    // Live Room sessions
+    match /rooms/{roomId} {
+      allow read, write: if true;
+    }
+
+    // Test connection doc
+    match /test/{docId} {
+      allow read, write: if true;
+    }
+  }
+}

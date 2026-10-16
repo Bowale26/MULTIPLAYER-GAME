@@ -1,0 +1,34 @@
+[
+  {
+    "id": "PID-ALEX77",
+    "email": "alex@game.io",
+    "username": "Alex",
+    "passwordHash": "8933d8b6eaab51fed111da227b1800bc191b1f1bcc3c128617ebd402c3e12cd1a9f309d23cb53f9187dac1e05e38cf7da7f4441c0e869da704e4fd4d826fb4d0",
+    "salt": "demo-salt-123",
+    "avatarIndex": 1,
+    "token": "token-alex-default",
+    "createdAt": 1791866470298,
+    "stats": {
+      "gamesPlayed": 14,
+      "gamesWon": 9,
+      "highScore": 165,
+      "totalPoints": 1240
+    }
+  },
+  {
+    "id": "PID-8ACAC6",
+    "email": "player1@clash.io",
+    "username": "NeonStrike",
+    "passwordHash": "39260bf47870f2a809f3bb200980c20abdd5e3d5b36b5e0c87767f6ac1e6319bc39ba28d85f30945a09cca74ce1dccdc65586d9db29ec82fabe43723bc02d1c0",
+    "salt": "f797592bb130aefa35bb68d26347abfd",
+    "avatarIndex": 3,
+    "token": "token-f43b9f002e2f7aa0fc34497763f0cc2cbb692a10f78857cd",
+    "createdAt": 1792125674309,
+    "stats": {
+      "gamesPlayed": 0,
+      "gamesWon": 0,
+      "highScore": 0,
+      "totalPoints": 0
+    }
+  }
+]

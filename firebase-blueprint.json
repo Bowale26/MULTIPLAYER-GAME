@@ -1,0 +1,86 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "Registered competitive player profile and adult statistics",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string", "format": "email" },
+        "username": { "type": "string", "minLength": 2, "maxLength": 30 },
+        "avatarIndex": { "type": "number" },
+        "createdAt": { "type": "number" },
+        "competitiveRating": { "type": "number" },
+        "tier": { "type": "string" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "gamesPlayed": { "type": "number" },
+            "gamesWon": { "type": "number" },
+            "highScore": { "type": "number" },
+            "totalPoints": { "type": "number" },
+            "roundsPlayed": { "type": "number" },
+            "bestStreak": { "type": "number" },
+            "currentStreak": { "type": "number" },
+            "fastestResponseMs": { "type": "number" },
+            "winLossRatio": { "type": "number" }
+          }
+        }
+      },
+      "required": ["id", "username", "stats"]
+    },
+    "MatchHistory": {
+      "title": "MatchHistory",
+      "description": "Immutable event-sourcing document of completed competitive match outcomes",
+      "type": "object",
+      "properties": {
+        "matchId": { "type": "string" },
+        "roomCode": { "type": "string" },
+        "winnerUid": { "type": "string" },
+        "winnerNickname": { "type": "string" },
+        "loserUid": { "type": "string" },
+        "participants": {
+          "type": "array"
+        },
+        "finalScores": {
+          "type": "object"
+        },
+        "timestamp": { "type": "number" },
+        "streakDelta": { "type": "number" },
+        "roundsPlayed": { "type": "number" },
+        "gameMode": { "type": "string" }
+      },
+      "required": ["matchId", "winnerUid", "timestamp", "finalScores"]
+    },
+    "Room": {
+      "title": "Room",
+      "description": "Active multiplayer match session state synchronized in real-time",
+      "type": "object",
+      "properties": {
+        "roomCode": { "type": "string" },
+        "state": { "type": "string" },
+        "round": { "type": "number" },
+        "totalRounds": { "type": "number" },
+        "roundDuration": { "type": "number" },
+        "targetColor": { "type": "string" },
+        "players": { "type": "array" },
+        "updatedAt": { "type": "number" }
+      },
+      "required": ["roomCode", "state", "players"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "Player profile, stats, and achievements"
+    },
+    "/match_history/{matchId}": {
+      "schema": "MatchHistory",
+      "description": "Immutable match completion event logs"
+    },
+    "/rooms/{roomId}": {
+      "schema": "Room",
+      "description": "Live match sessions"
+    }
+  }
+}

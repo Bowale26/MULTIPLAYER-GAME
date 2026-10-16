@@ -1,0 +1,9 @@
+{
+  "name": "MULTIPLAYER GAME",
+  "description": "Production-grade real-time multiplayer gaming platform featuring Color Clash, AI Game Master, Computer Vision, A2A Judge Agent, and Self-Maintenance Rulebook.",
+  "requestFramePermissions": [
+    "camera",
+    "microphone"
+  ],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
